@@ -66,8 +66,6 @@ function addNode(key, value, tree) {
     var newY_coor = parentY_coor + 75;
     if (side == 0 ){
         newX_coor = parentX_coor - 300/(Math.pow(2, depth));
-        console.log(depth);
-        console.log(newX_coor);
     }
     else {
         newX_coor = parentX_coor + 300/(Math.pow(2, depth));
@@ -118,6 +116,10 @@ addButton.onclick = function(e) {
 	e.preventDefault();
 	var addKey = document.getElementById("addKey").value;
 	var addVal = document.getElementById("addVal").value;
+    var numVal = parseInt(addKey) 
+    if (numVal != NaN) { 
+        addKey = numVal;
+    }
 	if (len == -1) {
 		createBST(addKey, addVal, tree);
 	}

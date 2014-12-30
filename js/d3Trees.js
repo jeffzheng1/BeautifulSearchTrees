@@ -98,10 +98,10 @@ var createVisual = function () {
 	   		.attr("x", function(d) {
 	   			var str = d.key + " : " + d.val;
 	   			var length = str.length;
-	   			return d.x_coor - length*2.5;
+	   			return d.x_coor - length * 2.5;
 	   		})
 	   		.attr("y", function(d) {
-	   			return d.y_coor+3.5;
+	   			return d.y_coor + 3.5;
 	   		})
 	   		.attr("font-weight", "bold")
 	   		.attr("font-family", "sans-serif")

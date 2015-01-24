@@ -4,7 +4,10 @@
 .index-content { 
     margin-top:15%;
 }
-.index-btn { 
+.index-btn,
+.index-btn:hover { 
+    font-size: 30px;
     padding-top: 50px;
     padding-bottom: 50px;
+    text-decoration: none;
 }

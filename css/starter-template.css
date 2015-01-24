@@ -15,11 +15,10 @@ body {
     box-shadow: inset 1px 1px 6px 2px rgba(0,0,0, .25);
     margin-bottom: 20px;
     margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
 }
 .navbar { 
 	background-color: #3399FF !important;
+    border: none;
 }	
 .navbar-inverse .navbar-brand { 
     color:white;
@@ -38,5 +37,13 @@ body {
 .btn-primary:active,
 .btn-primary.active {
   background-color:  #3399FF ;
-  border-color: #285e8e;
+  border: none;
+
+}
+.righthand { 
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.modal-dialog { 
+    width: 730px;
 }

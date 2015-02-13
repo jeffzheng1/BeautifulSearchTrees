@@ -1,3 +1,23 @@
+ // Using d3Trees requires creating an array which will 
+// represent your tree data structure. Each index of the array 
+// holds a node object instantiated with the following variables:
+// var node0 = {
+//    "nodeID": 0,
+//    "parent": null,
+//    "children": [],
+//    "key": rootKey,
+//    "x_coor": rootX,
+//    "y_coor": rootY,
+//    "searched": 0,
+//    "depth": 0  
+// };
+// 
+// Using the buttons for visualization requires that you implement the following methods: 
+// 1) addNode
+// 2) removeNode
+// 3) searchNode
+
+
 var xScale; //scale for xAxis
 var yScale; //scale for yAxis
 var w = 1000; //width of canvas
@@ -71,7 +91,7 @@ function collide(node) {
       }
     }
     return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-  };
+  }
 }
 
 function reassignChildren(nodeID, tree) { 
@@ -150,15 +170,15 @@ function assignCoordinates(tree, svg) {
              .attr("height", h);
           return assignCoordinates(tree);
         }
-        var modifier = 1;
+        var x_modifier = 1;
         if (numChildren == 2) { 
-          modifier = 1.24;
+          x_modifier = 1.24;
         } if (numChildren == 4) { 
-          modifier = .85;
-          if (j==2) { 
-            modifier += .06
-          } else if (j==3) { 
-            modifier += .04
+          x_modifier = .85;
+          if (j == 2) { 
+            x_modifier += .06;
+          } else if (j == 3) { 
+            x_modifier += .04;
           }
         }
         //change the depth element
@@ -166,11 +186,11 @@ function assignCoordinates(tree, svg) {
           runAgain = true;
           continue;
         }
-        var baseX = node.x_coor - numChildren * 25 * (tree.length*.4);
+        var baseX = node.x_coor - numChildren * 25 * (tree.length * .4);
         if (child) {
-          child.x_coor = baseX + j * 75 * modifier * (tree.length*.4);
+          child.x_coor = baseX + j * 75 * x_modifier * (tree.length * .4);
           if (child.x_coor > w) { 
-            w = w*1.25;
+            w = w * 1.25;
             svg.attr("width", w)
             return assignCoordinates(tree);
           }
@@ -181,16 +201,7 @@ function assignCoordinates(tree, svg) {
   }
 }
 
-var createVisual = function (svg, tree) {
-  resetCoodinates(tree);
-  assignCoordinates(tree, svg);
-  while (runAgain) {
-    assignCoordinates(tree, svg);
-  }
-  $("#canvas").scrollLeft(w*.15);
-  $("#previous").scrollLeft(w*.15);
-  svg.selectAll("line").remove(); //remove old parent-child lines
-
+function detectCollisions(tree, svg) { 
   var reAssign = []
   nodes = d3.range(tree.length).map(function() { return {radius: radius}; })
   var i = 0;
@@ -220,7 +231,9 @@ var createVisual = function (svg, tree) {
   for (nodeID in reAssign) { 
     reassignChildren(reAssign[nodeID], tree);
   }
+}
 
+function drawCircles(tree, svg) {
   //ANIMATES EACH NODE IN TREE
   //each circle represents a node in the tree
   color = d3.scale.category10();
@@ -248,7 +261,9 @@ var createVisual = function (svg, tree) {
         })
         .attr("r", 25);
   circles.exit().transition().duration(500).style("opacity", 0).remove(); //removes circles with no data binded
+}
 
+function drawLabels(tree, svg) {
   //ANIMATES KEY:VALUE TEXT OF EACH CIRCLE
   //each label represents key:value text
   var labels = svg.selectAll(".labels").data(tree, function(d) { return d.nodeID; } ); //binds data to element with class labels in svg canvas
@@ -300,13 +315,29 @@ var createVisual = function (svg, tree) {
       .attr("font-size", "12px")
       .attr("fill", "black");
   labels.exit().transition().duration(500).style("opacity", 0).remove(); //removes labels with no data binded
+}
+
+var createVisual = function (svg, tree) {
+  resetCoodinates(tree);
+  assignCoordinates(tree, svg);
+  while (runAgain) {
+    assignCoordinates(tree, svg);
+  }
+  $("#canvas").scrollLeft(w*.15);
+  $("#previous").scrollLeft(w*.15);
+  svg.selectAll("line").remove(); //remove old parent-child lines
+  
+  detectCollisions(tree, svg);
+  drawCircles(tree, svg);
+  drawLabels(tree, svg);
   drawTreeLines(tree, svg);
   $('#history').attr("data-content", insertHistory);
+
 };
 
 function addNodeHelper(addKey, tree, svg, history) { 
   if (addKey.indexOf(",") > -1) {
-        addManyNodes(addKey+",", tree, history);
+    addManyNodes(addKey+",", tree, history);
   } else {
     var numVal = parseInt(addKey);
     if (numVal != NaN) { 

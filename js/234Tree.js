@@ -115,6 +115,10 @@ function createBST(rootKey, tree, history) {
 //need to add logic for encountering full node
 function addNode(key, tree, history) {
     if (history) {
+        if ($.inArray(key, insertHistory) != -1) { 
+            bootbox.alert(key + " is already in the tree! Please select a different number.");
+            return;
+        }
         insertHistory.push(key);
     }
     for (node in tree) { 
@@ -127,14 +131,9 @@ function addNode(key, tree, history) {
     while (currentNode != null) {
         currentKeyList = currentNode.key;
         if (currentNode.children[0] == null && currentNode.key.length < 3) { 
-            pushSortKey(key, currentNode);
-            // console.log(currentNode.key);
+            pushSortKey(key, currentNode);  
             return;
         } else if (currentNode.key.length == 3) { 
-            // var leftNode = currentNode.key.splice(0, 1);
-            //need to reformat all children when poped 
-            // var rightNode = currentNode.key.splice(1, 1);
-            // console.log(tree);
             if (currentParent == -1) { 
                 var leftNode = currentNode.key.splice(0, 1)[0];
                 //need to reformat all children when poped 
@@ -159,11 +158,9 @@ function addNode(key, tree, history) {
                 pushSortKey(currentNode.key.splice(1, 1)[0], parentNode);
                 //need to determine which side of the node it is on
                 var thisSide = findSide(currentNode.nodeID, parentNode.children);
-                // console.log(parentNode.children.length);
-                // console.log(thisSide);
+                
                 shiftRight(thisSide, parentNode.children);
-                // console.log(parentNode.children);
-                // console.log(tree);
+                
                 var rightNode = currentNode.key.splice(1, 1)[0];
                 rightNodeChildren = currentNode.children.splice(2, 2);
                 formatNode(rightNode, tree, currentParent, thisSide+1, rightNodeChildren);
@@ -194,7 +191,6 @@ function addNode(key, tree, history) {
             currentNode = tree[currentNode.children[3]];
             side = 3;
         }
-        // console.log(key + ":" +side);
     }
     //abstract this into a different function 
     formatNode(key, tree, currentParent, side, []);
@@ -286,7 +282,6 @@ function removeNode(key, tree, r) {
                 var nextLargestKey = findNextLargestKey(currentKeyList.indexOf(key), currentNode.nodeID, tree);
                 removeNode(nextLargestKey, tree, 1);
                 replace(key, nextLargestKey, tree);
-                // pushSortKey(nextLargestKey, currentNode);
                 return;
             }
         }

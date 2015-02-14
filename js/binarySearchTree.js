@@ -68,45 +68,51 @@ function findNextLargestKey(nodeID, tree) {
 
 function createBST(rootKey, tree) {
     insertHistory.push(rootKey);
-	var node0 = {
-		"nodeID": 0,
-		"parent": null,
-		"children": [],
-		"key": rootKey,
-		"x_coor": rootX,
-		"y_coor": rootY,
-		"searched": 0,
-		"depth": 0	
-	};
-	len = len + 1;
-	return tree.push(node0);
+    var node0 = {
+        "nodeID": 0,
+        "parent": null,
+        "children": [],
+        "key": rootKey,
+        "x_coor": rootX,
+        "y_coor": rootY,
+        "searched": 0,
+        "depth": 0  
+    };
+    len = len + 1;
+    return tree.push(node0);
 };
-	
+    
 function searchNode(rootKey) {
-	for (node in tree) { 
-		node.searched = 0;
-	}
-	return search_recur(rootKey, tree[0]);
+    for (node in tree) { 
+        node.searched = 0;
+    }
+    return search_recur(rootKey, tree[0]);
 };
 
 function search_recur(rootKey, node) {
-	if (node == null || node.key == rootKey){
-		if (node) { 
-			node.searched = 1;
-		}
-		return node
-	} else if (rootKey < node.key){
-		return search_recur(rootKey, currentTree[node.children[0]]);
-	} else {
-		return search_recur(rootKey, currentTree[node.children[1]]);
-	}
+    if (node == null || node.key == rootKey){
+        if (node) { 
+            node.searched = 1;
+        }
+        return node
+    } else if (rootKey < node.key){
+        return search_recur(rootKey, currentTree[node.children[0]]);
+    } else {
+        return search_recur(rootKey, currentTree[node.children[1]]);
+    }
 };
 
-function addNode(key, tree) {
-    insertHistory.push(key);
-	for (node in tree) { 
-		node.searched = 0;
-	}
+function addNode(key, tree, history) {
+    if (history) {
+        if ($.inArray(key, insertHistory) != -1) { 
+            bootbox.alert(key + " is already in the tree! Please select a different number.");
+            return;
+        }
+        insertHistory.push(key);
+    }
+    for (node in tree) { 
+        node.searched = 0;
+    }
     var currentNode = tree[0];
     var currentParent = null;
     var side = 0;
@@ -128,15 +134,15 @@ function addNode(key, tree) {
     var depth = tree[currentParent].depth + 1;
     len++;
     var newNode = {
-		"nodeID": len,
-		"parent": currentParent,
-		"children": [],
-		"key": key,
-		"x_coor": null,
-		"y_coor": null,
-		"searched": 0,
-		"depth": depth
-	};
+        "nodeID": len,
+        "parent": currentParent,
+        "children": [],
+        "key": key,
+        "x_coor": null,
+        "y_coor": null,
+        "searched": 0,
+        "depth": depth
+    };
     tree[currentParent].children[side] = len;
     tree.push(newNode);
     formatChildren(tree);
@@ -144,9 +150,9 @@ function addNode(key, tree) {
 
 function removeNode(key, tree){
     var nextKey = null;
-	for (var i = 0; i < tree.length; i++) {
-		node = tree[i];
-		if (node.key == key) {
+    for (var i = 0; i < tree.length; i++) {
+        node = tree[i];
+        if (node.key == key) {
             if (findLength(node.children) > 1) { 
                 nextKey = findNextLargestKey(i, tree);
                 removeNode(nextKey, tree);
@@ -165,13 +171,13 @@ function removeNode(key, tree){
             } else {
                 var thisSide = findSide(i, tree[node.parent].children);
                 tree[node.parent].children[thisSide] = null;
-    			tree.splice(i, 1);
+                tree.splice(i, 1);
                 reorderNodes(tree);
                 len--;
             }
             break;
-		}
-	}
+        }
+    }
     if (nextKey) {
         for (var i = 0; i < tree.length; i++) {
             node = tree[i];

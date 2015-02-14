@@ -36,11 +36,13 @@ var runAgain = false;
 //Create SVG element
 var mainSvg = d3.select("#canvas")
       .append("svg")
+      .classed("mainSvg", true)
       .attr("width", w)
       .attr("height", h);
 
 var compareSvg = d3.select("#previous")
       .append("svg")
+      .classed("compareSvg", true)
       .attr("width", w)
       .attr("height", h);
 
@@ -59,7 +61,7 @@ function addManyNodes(keys, tree, history) {
           if (len == -1) { 
               createBST(parseInt(string), tree, history);
           } else { 
-              addNode(parseInt(string), tree, history);
+              addNode(parseInt(string), tree, history, insertHistory);
           }
           string = "";
           continue;
@@ -166,9 +168,12 @@ function assignCoordinates(tree, svg) {
           w = w*1.25;
           h = h*1.1;
           heightIncrement += 10;
-          svg.attr("width", w)
-             .attr("height", h);
-          return assignCoordinates(tree);
+          $(".mainSvg").attr("width", w)
+            .attr("height", h);
+          $(".compareSvg").attr("width", w)
+            .attr("height", h);
+          resetCoodinates(tree);
+          return assignCoordinates(tree, svg);
         }
         var x_modifier = 1;
         if (numChildren == 2) { 
@@ -191,8 +196,10 @@ function assignCoordinates(tree, svg) {
           child.x_coor = baseX + j * 75 * x_modifier * (tree.length * .4);
           if (child.x_coor > w) { 
             w = w * 1.25;
-            svg.attr("width", w)
-            return assignCoordinates(tree);
+            $(".mainSvg").attr("width", w);
+            $(".compareSvg").attr("width", w);
+            resetCoodinates(tree);
+            return assignCoordinates(tree, svg);
           }
           child.y_coor = node.y_coor + heightIncrement;
         }
@@ -202,7 +209,7 @@ function assignCoordinates(tree, svg) {
 }
 
 function detectCollisions(tree, svg) { 
-  var reAssign = []
+  var reAssign = [];
   nodes = d3.range(tree.length).map(function() { return {radius: radius}; })
   var i = 0;
   var n = nodes.length;
@@ -259,7 +266,7 @@ function drawCircles(tree, svg) {
         .attr("cy", function(d) {
           return d.y_coor;
         })
-        .attr("r", 25);
+        .attr("r", radius);
   circles.exit().transition().duration(500).style("opacity", 0).remove(); //removes circles with no data binded
 }
 
@@ -335,18 +342,18 @@ var createVisual = function (svg, tree) {
 
 };
 
-function addNodeHelper(addKey, tree, svg, history) { 
+function addNodeHelper(addKey, tree, svg, isHistory) { 
   if (addKey.indexOf(",") > -1) {
-    addManyNodes(addKey+",", tree, history);
+    addManyNodes(addKey + ",", tree, isHistory);
   } else {
     var numVal = parseInt(addKey);
     if (numVal != NaN) { 
       addKey = numVal;
     }
     if (len == -1) {
-      createBST(addKey, tree, history);
+      createBST(addKey, tree, isHistory);
     } else {
-      addNode(addKey, tree, history);
+      addNode(addKey, tree, isHistory);
     }
   }
   createVisual(svg, tree);

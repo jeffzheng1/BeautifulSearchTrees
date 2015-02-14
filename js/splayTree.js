@@ -199,6 +199,10 @@ function createBST(rootKey, tree, history) {
 
 function addNode(key, tree, history) {
     if (history) {
+        if ($.inArray(key, insertHistory) != -1) { 
+            bootbox.alert(key + " is already in the tree! Please select a different number.");
+            return;
+        }
         insertHistory.push(key);
     }
     for (node in tree) { 

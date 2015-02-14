@@ -169,6 +169,11 @@ function removeNode(key, tree){
                 reorderNodes(tree);
                 len--;
             } else {
+                if (tree.length == 1) { 
+                    tree.pop();
+                    len--;
+                    return;
+                }
                 var thisSide = findSide(i, tree[node.parent].children);
                 tree[node.parent].children[thisSide] = null;
                 tree.splice(i, 1);

@@ -17,7 +17,6 @@
 // 2) removeNode
 // 3) searchNode
 
-
 var xScale; //scale for xAxis
 var yScale; //scale for yAxis
 var w = 1000; //width of canvas
@@ -144,7 +143,7 @@ var drawTreeLines = function (tree, svg) {
   }
 }
 
- function findNode(nodeID, tree) { 
+function findNode(nodeID, tree) { 
   for (var i = 0; i < tree.length; i++) {
     if (tree[i].nodeID == nodeID) { 
       return tree[i];
@@ -386,6 +385,8 @@ deleteButton.onclick = function(e) {
   if (numVal != NaN) { 
     deleteKey = numVal;
   }
+  var index = insertHistory.indexOf(deleteKey);
+  insertHistory.splice(index, 1);
   removeNode(deleteKey, currentTree);
   createVisual(mainSvg, currentTree);
   createVisual(compareSvg, previousTree);

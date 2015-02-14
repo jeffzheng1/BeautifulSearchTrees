@@ -300,6 +300,10 @@ function removeNode(key, tree, r) {
             side = 3;
         }
     }
+    if (currentTree[0].key.length == 0) { 
+        currentTree[0].key = currentTree[1].key;
+        currentTree.pop();
+    }
 }
 
 function formatNode(key, tree, currentParent, side, children) { 
